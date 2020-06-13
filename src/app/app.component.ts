@@ -6,7 +6,7 @@ import {Component} from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  currentSection: string = "recipes";
+  currentSection: string = "shopping";
 
   registerSection(section: string) {
     this.currentSection = section;
