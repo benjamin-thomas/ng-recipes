@@ -7,6 +7,10 @@ import {Ingredient} from '../shared/ingredient';
 export class ShoppingListService {
   onChange = new EventEmitter<Ingredient[]>();
 
+  constructor() {
+    console.log('shopping-list-service constructor');
+  }
+
   // tslint:disable-next-line:variable-name
   private _ingredients: Ingredient[] = [
     new Ingredient('Apples', 5),
@@ -20,6 +24,11 @@ export class ShoppingListService {
 
   addIngredient(ingredient: Ingredient) {
     this._ingredients.push(ingredient);
+    this.onChange.emit(this._ingredients.slice());
+  }
+
+  addIngredients(ingredients: Ingredient[]) {
+    this._ingredients.push(...ingredients);
     this.onChange.emit(this._ingredients.slice());
   }
 }
