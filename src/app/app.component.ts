@@ -1,6 +1,4 @@
 import {Component} from '@angular/core';
-import {ShoppingListService} from './shopping-list/shopping-list.service';
-import {RecipeService} from './recipes/recipe.service';
 
 @Component({
   selector: 'app-root',
@@ -8,9 +6,4 @@ import {RecipeService} from './recipes/recipe.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  currentSection = 'recipes';
-
-  registerSection(section: string) {
-    this.currentSection = section;
-  }
 }

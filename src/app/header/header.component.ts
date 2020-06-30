@@ -1,4 +1,5 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component} from '@angular/core';
+import {NamedRoutes} from '../app-routing-module';
 
 @Component({
   selector: 'app-header',
@@ -8,9 +9,5 @@ import {Component, EventEmitter, Output} from '@angular/core';
   ]
 })
 export class HeaderComponent {
-  @Output() private sectionChange = new EventEmitter<string>();
-
-  show(section: string) {
-    this.sectionChange.emit(section);
-  }
+  NamedRoutes = NamedRoutes;
 }
