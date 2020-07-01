@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Recipe} from '../recipe';
 import {RecipeService} from '../recipe.service';
+import {NamedRoutes} from '../../app-routing-module';
 
 @Component({
   selector: 'app-recipe-list',
@@ -9,6 +10,7 @@ import {RecipeService} from '../recipe.service';
 })
 export class RecipeListComponent implements OnInit {
   recipes: Recipe[];
+  NamedRoutes = NamedRoutes;
 
   constructor(private recipeService: RecipeService) {
   }
