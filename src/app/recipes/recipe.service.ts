@@ -13,6 +13,7 @@ export class RecipeService {
 
   // tslint:disable-next-line:variable-name
   private _recipes: Recipe[] = [
+
     new Recipe(
       1,
       'Pork ribs',
@@ -40,7 +41,40 @@ export class RecipeService {
         new Ingredient('Mustard', 1),
       ]
     ),
-  ];
+
+    // Dorian début
+    new Recipe(
+      3,
+      'Porc au caramel',
+      'Le meilleur Porc au caramel',
+      'https://imgcdn.circulaire-en-ligne.ca/wp-content/uploads/porc-au-caramel-3.jpg',
+      [
+        new Ingredient('Cube porc', 10),
+        new Ingredient('Fondre du sucre (grammes)', 50),
+        new Ingredient('sauce sauja (grammes)', 50),
+        new Ingredient('Riz (1 portion)', 1),
+        new Ingredient('4 épices (grammes)', 5),
+      ]
+    ),
+    // Dorian fin
+
+    // Ewan début
+    new Recipe(
+      4,
+      'Lasagnes',
+      'Lasagnes parfaites',
+      'https://i-reg.unimedias.fr/sites/art-de-vivre/files/styles/recipe/public/lasagnes-bolognaise_istock.jpg?auto=compress%2Cformat&crop=faces%2Cedges&cs=srgb&fit=crop&h=500&w=393',
+      [
+        new Ingredient('lasagne à garnir', 18),
+        new Ingredient('viande achée (gramme)', 600),
+        new Ingredient('sauce tomate (gramme)', 500),
+        new Ingredient('béchamel (gramme)', 1000),
+
+      ]
+)
+  // Ewan fin
+
+];
 
   get recipes(): Recipe[] {
     return this._recipes.slice();
