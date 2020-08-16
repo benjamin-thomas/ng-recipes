@@ -14,8 +14,9 @@ export class ShoppingListService {
 
   // tslint:disable-next-line:variable-name
   private _ingredients: Ingredient[] = [
-    new Ingredient('Apples', 5),
-    new Ingredient('Tomatoes', 10),
+    new Ingredient('Pomme', 5),
+    new Ingredient('Tomate',5 ),
+    new Ingredient('Orange', 1),
   ];
 
   get ingredients(): Ingredient[] {
