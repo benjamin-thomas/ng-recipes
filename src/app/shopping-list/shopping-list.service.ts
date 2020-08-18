@@ -7,6 +7,7 @@ import {Subject} from 'rxjs';
 })
 export class ShoppingListService {
   onChange = new Subject<Ingredient[]>();
+  onEdit = new Subject<number>();
 
   constructor() {
     console.log('shopping-list-service constructor');
@@ -15,7 +16,7 @@ export class ShoppingListService {
   // tslint:disable-next-line:variable-name
   private _ingredients: Ingredient[] = [
     new Ingredient('Pomme', 5),
-    new Ingredient('Tomate',5 ),
+    new Ingredient('Tomate', 5 ),
     new Ingredient('Orange', 1),
   ];
 
@@ -31,6 +32,11 @@ export class ShoppingListService {
 
   addIngredients(ingredients: Ingredient[]) {
     this._ingredients.push(...ingredients);
+    this.onChange.next(this._ingredients.slice());
+  }
+
+  deleteIngredient(id: number) {
+    this._ingredients.splice(id, 1);
     this.onChange.next(this._ingredients.slice());
   }
 }
