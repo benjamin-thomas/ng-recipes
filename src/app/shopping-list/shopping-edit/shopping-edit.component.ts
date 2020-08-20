@@ -12,7 +12,7 @@ import {Subscription} from 'rxjs';
 export class ShoppingEditComponent implements OnInit, OnDestroy {
   @ViewChild('f', { static: false}) form: NgForm;
   private editSub: Subscription;
-  private editID: number = null; // must initialize variable here for the UI
+  editID: number = null; // must initialize variable here for the UI
 
   constructor(private shoppingListService: ShoppingListService) {
   }
@@ -32,7 +32,7 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
     });
   }
 
-  private editing() {
+  editing() {
     return this.editID !== null;
   }
 
