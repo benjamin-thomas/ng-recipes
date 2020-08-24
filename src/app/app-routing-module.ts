@@ -6,12 +6,14 @@ import {RecipeDetailComponent} from './recipes/recipe-detail/recipe-detail.compo
 import {MissingRecipeDetailComponent} from './recipes/missing-recipe-detail/missing-recipe-detail.component';
 import {RecipeEditComponent} from './recipes/recipe-edit/recipe-edit.component';
 import {RecipesResolverService} from './recipes/recipes-resolver.service';
+import {AuthComponent} from './auth/auth.component';
 
 // https://medium.com/spacepilots/using-typescript-enums-to-make-your-angular-routes-more-type-safe-fefd95c40987
 // Interesting: https://stackoverflow.com/questions/47175065/passing-type-safe-route-data-to-routes-in-angular-2
 export enum NamedRoutes {
   Recipes = '/recipes',
   ShoppingList = '/shopping-list',
+  Auth = 'auth',
 }
 
 const routes: Routes = [
@@ -25,6 +27,7 @@ const routes: Routes = [
     ]
   },
   {path: NamedRoutes.ShoppingList.substr(1), component: ShoppingListComponent},
+  {path: NamedRoutes.Auth, component: AuthComponent},
 ];
 
 @NgModule({
