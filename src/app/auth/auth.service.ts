@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {catchError} from 'rxjs/operators';
-import {Observable, throwError} from 'rxjs';
+import {catchError, tap} from 'rxjs/operators';
+import {BehaviorSubject, Observable, throwError} from 'rxjs';
+import {User} from './user.model';
 
 export interface AuthResponseData {
   idToken: string;
@@ -17,6 +18,8 @@ export class AuthService {
   signupURL = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp';
   loginURL = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword';
   apiKey = 'AIzaSyBEkXxgcFqQGulBwiCkxMdN1NAw5pRnPfU';
+  // BehaviorSubject allows a subscriber to access the last nexted value (before the actual subscription)
+  user = new BehaviorSubject<User>(null);
 
   constructor(private http: HttpClient) {
   }
@@ -67,7 +70,8 @@ export class AuthService {
         returnSecureToken: true
       }, {params: {key: this.apiKey}})
       .pipe(
-        catchError(err => throwError(AuthService.addBetterErrorMessages(err)))
+        catchError(err => throwError(AuthService.addBetterErrorMessages(err))),
+        tap(resp => this.handleAuth(resp))
       );
   }
 
@@ -76,9 +80,17 @@ export class AuthService {
       .post<AuthResponseData>(this.loginURL, {email, password, returnSecureToken: true}, {
         params: {key: this.apiKey}
       })
-      .pipe(catchError(err => {
-        return throwError(AuthService.addBetterErrorMessages(err));
-      }));
+      .pipe(
+        catchError(err => throwError(AuthService.addBetterErrorMessages(err))),
+        tap(resp => this.handleAuth(resp))
+      );
   }
 
+  private handleAuth(resp: AuthResponseData) {
+    const secondsUntilExpiration: number = Number(resp.expiresIn);
+    const now = new Date();
+    const expiresIn = new Date(now.getTime() + secondsUntilExpiration * 1000);
+    const user = new User(resp.email, resp.localId, resp.idToken, expiresIn);
+    this.user.next(user);
+  }
 }

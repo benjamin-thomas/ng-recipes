@@ -6,12 +6,15 @@
 
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <li routerLinkActive="active"><a [routerLink]=NamedRoutes.Recipes>Recipes</a></li>
+        <li routerLinkActive="active" *ngIf="isLoggedIn"><a [routerLink]=NamedRoutes.Recipes>Recipes</a></li>
         <li routerLinkActive="active"><a [routerLink]=NamedRoutes.ShoppingList>Shopping List</a></li>
-        <li routerLinkActive="active"><a [routerLink]=NamedRoutes.Auth>Authenticate</a></li>
+        <li routerLinkActive="active" *ngIf="!isLoggedIn"><a [routerLink]=NamedRoutes.Auth>Authenticate</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown" appDropdown>
+        <li *ngIf="isLoggedIn">
+          <a href="#">Logout</a>
+        </li>
+        <li class="dropdown" appDropdown *ngIf="isLoggedIn">
           <a style="cursor: pointer" class="dropdown-toggle" role="button">
             Manage <span class="caret"></span></a>
           <ul class="dropdown-menu">
