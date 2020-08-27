@@ -3,6 +3,8 @@ import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {catchError, tap} from 'rxjs/operators';
 import {BehaviorSubject, Observable, throwError} from 'rxjs';
 import {User} from './user.model';
+import {Router} from '@angular/router';
+import {NamedRoutes} from '../named-routes';
 
 export interface AuthResponseData {
   idToken: string;
@@ -21,7 +23,8 @@ export class AuthService {
   // BehaviorSubject allows a subscriber to access the last nexted value (before the actual subscription)
   user = new BehaviorSubject<User>(null);
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private router: Router) {
   }
 
   private static friendlyErrorMessage(apiMessage: string) {
@@ -84,6 +87,11 @@ export class AuthService {
         catchError(err => throwError(AuthService.addBetterErrorMessages(err))),
         tap(resp => this.handleAuth(resp))
       );
+  }
+
+  logout() {
+    this.user.next(null);
+    this.router.navigate([NamedRoutes.Auth]);
   }
 
   private handleAuth(resp: AuthResponseData) {

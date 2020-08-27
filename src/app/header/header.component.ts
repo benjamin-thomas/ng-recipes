@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {NamedRoutes} from '../app-routing-module';
 import {DataStorageService} from '../shared/data-storage.service';
 import {AuthService} from '../auth/auth.service';
 import {Subscription} from 'rxjs';
+import {NamedRoutes} from '../named-routes';
 
 @Component({
   selector: 'app-header',
@@ -13,7 +13,7 @@ import {Subscription} from 'rxjs';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   NamedRoutes = NamedRoutes;
-  private isLoggedIn = false;
+  isLoggedIn = false;
   private userSub: Subscription;
 
   constructor(private dataStorageService: DataStorageService,
@@ -36,5 +36,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onFetchData() {
     this.dataStorageService.fetchRecipes().subscribe();
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }
