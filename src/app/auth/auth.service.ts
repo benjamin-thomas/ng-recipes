@@ -126,8 +126,8 @@ export class AuthService {
     localStorage.removeItem('userData');
     if (this.autoLogoutTimer) {
       clearTimeout(this.autoLogoutTimer);
-      this.autoLogoutTimer = null;
     }
+    this.autoLogoutTimer = null;
     this.router.navigate([NamedRoutes.Auth]);
   }
 

@@ -8,13 +8,15 @@ import {RecipeEditComponent} from './recipes/recipe-edit/recipe-edit.component';
 import {RecipesResolverService} from './recipes/recipes-resolver.service';
 import {AuthComponent} from './auth/auth.component';
 import {NamedRoutes} from './named-routes';
-
-// https://medium.com/spacepilots/using-typescript-enums-to-make-your-angular-routes-more-type-safe-fefd95c40987
+import {AuthGuard} from './auth/auth.guard';
 
 const routes: Routes = [
   {path: '', redirectTo: NamedRoutes.Recipes, pathMatch: 'full'},
   {
-    path: NamedRoutes.Recipes.substr(1), component: RecipesComponent, children: [
+    path: NamedRoutes.Recipes.substr(1),
+    component: RecipesComponent,
+    canActivate: [AuthGuard],
+    children: [
       {path: '', component: MissingRecipeDetailComponent},
       {path: 'new', component: RecipeEditComponent},
       {path: ':id', component: RecipeDetailComponent, resolve: [RecipesResolverService]},
