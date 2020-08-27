@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {DataStorageService} from '../shared/data-storage.service';
 import {AuthService} from '../auth/auth.service';
-import {Subscription} from 'rxjs';
+import {Subscription, timer} from 'rxjs';
 import {NamedRoutes} from '../named-routes';
 
 @Component({
@@ -14,7 +14,9 @@ import {NamedRoutes} from '../named-routes';
 export class HeaderComponent implements OnInit, OnDestroy {
   NamedRoutes = NamedRoutes;
   isLoggedIn = false;
+  secondsToLogout: number;
   private userSub: Subscription;
+  private timerSub: Subscription;
 
   constructor(private dataStorageService: DataStorageService,
               private authService: AuthService) {
@@ -22,12 +24,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.userSub.unsubscribe();
+    this.timerSub.unsubscribe();
   }
 
   ngOnInit(): void {
     this.userSub = this.authService.user.subscribe(user => {
       this.isLoggedIn = !!user;
+
+      if (user) {
+        this.timerSub = timer(0, 1000).subscribe(() => {
+          this.secondsToLogout = user.timeUntilExpirationMS() / 1000;
+        });
+      }
     });
+
+
   }
 
   onSaveData() {

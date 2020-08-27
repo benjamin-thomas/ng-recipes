@@ -22,6 +22,7 @@ export class AuthService {
   apiKey = 'AIzaSyBEkXxgcFqQGulBwiCkxMdN1NAw5pRnPfU';
   // BehaviorSubject allows a subscriber to access the last nexted value (before the actual subscription)
   user = new BehaviorSubject<User>(null);
+  private autoLogoutTimer: any;
 
   constructor(private http: HttpClient,
               private router: Router) {
@@ -78,6 +79,37 @@ export class AuthService {
       );
   }
 
+  autoLogin() {
+    const userData = localStorage.getItem('userData');
+    if (!userData) {
+      return;
+    }
+
+    const j: {
+      email: string,
+      id: string,
+      _token: string,
+      _tokenExpirationDate: string
+    } = JSON.parse(userData);
+    const user = new User(j.email, j.id, j._token, new Date(j._tokenExpirationDate));
+    if (!user.validToken) {
+      return;
+    }
+    console.log('Auto logging in...');
+    this.autoLogout(user.timeUntilExpirationMS());
+    this.user.next(user);
+  }
+
+  autoLogout(expirationDurationMS: number) {
+    const now = new Date();
+    const expiresIn = new Date(now.getTime() + expirationDurationMS);
+    console.log('Will auto-logout at:', expiresIn);
+    this.autoLogoutTimer = setTimeout(() => {
+      console.log('Auto logging-out:', new Date());
+      this.logout();
+    }, expirationDurationMS);
+  }
+
   login(email: string, password: string): Observable<AuthResponseData> {
     return this.http
       .post<AuthResponseData>(this.loginURL, {email, password, returnSecureToken: true}, {
@@ -91,6 +123,11 @@ export class AuthService {
 
   logout() {
     this.user.next(null);
+    localStorage.removeItem('userData');
+    if (this.autoLogoutTimer) {
+      clearTimeout(this.autoLogoutTimer);
+      this.autoLogoutTimer = null;
+    }
     this.router.navigate([NamedRoutes.Auth]);
   }
 
@@ -100,5 +137,7 @@ export class AuthService {
     const expiresIn = new Date(now.getTime() + secondsUntilExpiration * 1000);
     const user = new User(resp.email, resp.localId, resp.idToken, expiresIn);
     this.user.next(user);
+    localStorage.setItem('userData', JSON.stringify(user));
+    this.autoLogout(user.timeUntilExpirationMS());
   }
 }

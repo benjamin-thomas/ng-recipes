@@ -11,6 +11,7 @@
         <li routerLinkActive="active" *ngIf="!isLoggedIn"><a [routerLink]=NamedRoutes.Auth>Authenticate</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
+        <li>{{ secondsToLogout }}</li>
         <li *ngIf="isLoggedIn">
           <a style="cursor: pointer" (click)="logout()">Logout</a>
         </li>

@@ -4,7 +4,7 @@ export class User {
               private _token: string, private _tokenExpirationDate: Date) {
   }
 
-  get token() {
+  get validToken() {
     const now = new Date();
     const tokenExpired = !this._tokenExpirationDate || now > this._tokenExpirationDate;
     if (tokenExpired) {
@@ -13,4 +13,8 @@ export class User {
     return this._token;
   }
 
+  timeUntilExpirationMS(): number {
+    const now = new Date();
+    return this._tokenExpirationDate.getTime() - now.getTime();
+  }
 }

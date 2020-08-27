@@ -19,7 +19,7 @@ export class AuthInterceptorService implements HttpInterceptor {
           return next.handle(req); // authenticating
         }
         return next.handle(req.clone({
-          setParams: {auth: user.token},
+          setParams: {auth: user.validToken},
         }));
       })
     );
