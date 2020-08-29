@@ -24,7 +24,6 @@ export class Auth2Component implements OnInit {
   }
 
   ngOnInit(): void {
-
   }
 
   onSwitchMode() {
