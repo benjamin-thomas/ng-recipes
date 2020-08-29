@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, EventEmitter, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {AuthResponseData, AuthService} from './auth.service';
 import {Observable} from 'rxjs';
@@ -40,7 +40,6 @@ export class AuthComponent {
       this.isLoading = false;
       this.router.navigate(['/recipes']);
       console.log(resp);
-      // f.reset();
     }, errMessage => {
       this.isLoading = false;
       this.error = errMessage;
@@ -48,4 +47,14 @@ export class AuthComponent {
 
   }
 
+  handleClose() {
+    this.error = null;
+  }
+
+  autofill(f: NgForm) {
+    f.setValue({
+      email: 'user@example.com',
+      password: 'pa$$w0rd'
+    });
+  }
 }

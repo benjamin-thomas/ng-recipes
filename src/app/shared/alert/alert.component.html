@@ -2,8 +2,9 @@
   (click)="onClose()"
   class="backdrop"></div>
 
-<div class="alert-box _alert-{{ type }}">
+<div class="alert-box">
   <p>
+    {{ type | uppercase }}:
     <ng-content></ng-content>
   </p>
 

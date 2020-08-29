@@ -39,7 +39,7 @@ export class AuthService {
       case 'OPERATION_NOT_ALLOWED':
         message = 'This operation is not allowed';
         break;
-      case 'TOO_MANY_ATTEMPTS_TRY_LATER':
+      case 'TOO_MANY_ATTEMPTS_TRY_LATER : Too many unsuccessful login attempts. Please try again later.':
         message = 'Failed too many times, please wait a minute and try again';
         break;
       case 'INVALID_PASSWORD':
