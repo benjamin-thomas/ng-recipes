@@ -9,6 +9,7 @@ import {RecipesResolverService} from './recipes/recipes-resolver.service';
 import {AuthComponent} from './auth/auth.component';
 import {NamedRoutes} from './named-routes';
 import {AuthGuard} from './auth/auth.guard';
+import {Auth2Component} from './auth/auth2.component';
 
 const routes: Routes = [
   {path: '', redirectTo: NamedRoutes.Recipes, pathMatch: 'full'},
@@ -25,6 +26,7 @@ const routes: Routes = [
   },
   {path: NamedRoutes.ShoppingList.substr(1), component: ShoppingListComponent},
   {path: NamedRoutes.Auth, component: AuthComponent},
+  {path: 'auth2', component: Auth2Component},
 ];
 
 @NgModule({
