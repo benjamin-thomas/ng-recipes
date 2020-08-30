@@ -23,8 +23,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    // I don't see how this will ever get called anyways
     this.userSub.unsubscribe();
-    this.timerSub.unsubscribe();
+    if (this.timerSub) {
+      this.timerSub.unsubscribe();
+    }
   }
 
   ngOnInit(): void {
@@ -33,7 +36,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
       if (user) {
         this.timerSub = timer(0, 1000).subscribe(() => {
-          this.secondsToLogout = user.timeUntilExpirationMS() / 1000;
+          this.secondsToLogout = Math.round(user.timeUntilExpirationMS() / 1000);
         });
       }
     });
@@ -51,5 +54,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   logout() {
     this.authService.logout();
+
+    this.timerSub.unsubscribe();
+    this.secondsToLogout = null;
   }
 }
