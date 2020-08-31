@@ -20,7 +20,6 @@ const components = [
 
 @NgModule({
   declarations: components,
-  exports: components,
   imports: [
     RecipesRoutingModule,
     CommonModule,
