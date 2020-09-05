@@ -1,5 +1,4 @@
 import {RouterModule, Routes} from '@angular/router';
-import {NamedRoutes} from '../named-routes';
 import {RecipesComponent} from './recipes.component';
 import {AuthGuard} from '../auth/auth.guard';
 import {MissingRecipeDetailComponent} from './missing-recipe-detail/missing-recipe-detail.component';
@@ -10,7 +9,7 @@ import {NgModule} from '@angular/core';
 
 const routes: Routes = [
   {
-    path: NamedRoutes.Recipes.substr(1),
+    path: '',
     component: RecipesComponent,
     canActivate: [AuthGuard],
     children: [
