@@ -16,7 +16,7 @@ import {RouterModule} from '@angular/router';
     SharedModule,
     RouterModule.forChild([
       {path: '', component: AuthComponent},
-      {path: 'auth2', component: Auth2Component},
+      {path: '2', component: Auth2Component}, // url is now => `/auth/2`
     ])
   ],
   exports: [
