@@ -8,6 +8,10 @@ const routes: Routes = [
     path: NamedRoutes.Recipes.substr(1),
     // loadChildren: './recipes/recipes.module.ts#RecipesModule'}
     loadChildren: () => import('./recipes/recipes.module').then(m => m.RecipesModule)
+  },
+  {
+    path: NamedRoutes.Auth,
+    loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
   }
 ];
 

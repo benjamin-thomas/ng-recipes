@@ -4,7 +4,6 @@ import {Auth2Component} from './auth2.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SharedModule} from '../shared/shared.module';
 import {RouterModule} from '@angular/router';
-import {NamedRoutes} from '../named-routes';
 
 @NgModule({
   declarations: [
@@ -16,7 +15,7 @@ import {NamedRoutes} from '../named-routes';
     ReactiveFormsModule,
     SharedModule,
     RouterModule.forChild([
-      {path: NamedRoutes.Auth, component: AuthComponent},
+      {path: '', component: AuthComponent},
       {path: 'auth2', component: Auth2Component},
     ])
   ],
