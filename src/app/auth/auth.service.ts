@@ -5,6 +5,7 @@ import {BehaviorSubject, Observable, throwError} from 'rxjs';
 import {User} from './user.model';
 import {Router} from '@angular/router';
 import {NamedRoutes} from '../named-routes';
+import {environment} from '../../environments/environment';
 
 export interface AuthResponseData {
   idToken: string;
@@ -19,7 +20,7 @@ export interface AuthResponseData {
 export class AuthService {
   signupURL = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp';
   loginURL = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword';
-  apiKey = 'AIzaSyBEkXxgcFqQGulBwiCkxMdN1NAw5pRnPfU';
+  apiKey = environment.firebaseAPIKey;
 
   // BehaviorSubject allows a subscriber to access the last nexted value (before the actual subscription)
   user = new BehaviorSubject<User>(null);
