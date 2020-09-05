@@ -1,4 +1,4 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {catchError, tap} from 'rxjs/operators';
 import {BehaviorSubject, Observable, throwError} from 'rxjs';
@@ -19,14 +19,14 @@ export interface AuthResponseData {
 export class AuthService {
   signupURL = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp';
   loginURL = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword';
-  apiKey: string;
+  apiKey = 'AIzaSyBEkXxgcFqQGulBwiCkxMdN1NAw5pRnPfU';
+
   // BehaviorSubject allows a subscriber to access the last nexted value (before the actual subscription)
   user = new BehaviorSubject<User>(null);
   private autoLogoutTimer: any;
 
   constructor(private http: HttpClient,
               private router: Router) {
-    this.init();
   }
 
   private static friendlyErrorMessage(apiMessage: string) {
@@ -65,28 +65,6 @@ export class AuthService {
       message = 'Unknown error!';
     }
     return message;
-  }
-
-  private init(): void {
-    let apiKey = localStorage.getItem('firebaseApiKey');
-    if (apiKey) {
-      this.apiKey = apiKey;
-      return;
-    }
-
-    const promptMsg = `
-Hey developer!
-
-Give me your firebase API key so I could at least store it in local storage for now :)
-
-Also you may want to override the hard coded URL in the data storage service
-
-If you just want to test authentication failures, then just enter bogus data
-`;
-    apiKey = prompt(promptMsg, '');
-
-    localStorage.setItem('firebaseApiKey', apiKey);
-    this.apiKey = apiKey;
   }
 
   signup(email: string, password: string): Observable<AuthResponseData> {
