@@ -12,6 +12,10 @@ const routes: Routes = [
   {
     path: NamedRoutes.Auth,
     loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
+  },
+  {
+    path: NamedRoutes.ShoppingList.substr(1),
+    loadChildren: () => import('./shopping-list/shopping-list.module').then(m => m.ShoppingListModule)
   }
 ];
 
