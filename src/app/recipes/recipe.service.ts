@@ -1,7 +1,5 @@
 import {Injectable} from '@angular/core';
 import {Recipe} from './recipe';
-import {Ingredient} from '../shared/ingredient';
-import {ShoppingListService} from '../shopping-list/shopping-list.service';
 import {Subject} from 'rxjs';
 
 @Injectable({
@@ -10,9 +8,7 @@ import {Subject} from 'rxjs';
 export class RecipeService {
   recipesChanged = new Subject<Recipe[]>();
 
-  constructor(private shoppingListService: ShoppingListService) {
-    console.log('recipe-service constructor');
-  }
+  constructor() {}
 
   // tslint:disable-next-line:variable-name
   private _recipes: Recipe[] = [];
@@ -84,16 +80,13 @@ export class RecipeService {
     return this.recipes[id - 1];
   }
 
-  addIngredientsToShoppingList(ingredients: Ingredient[]) {
-    this.shoppingListService.addIngredients(ingredients);
-  }
-
   add(recipe: Recipe) {
     this._recipes.push(recipe);
     this.recipesChanged.next(this.recipes.slice());
   }
 
   update(id: number, recipe: Recipe) {
+    console.log('should not be called anymore');
     this._recipes[id - 1] = recipe;
     this.recipesChanged.next(this.recipes.slice());
   }
