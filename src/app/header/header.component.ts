@@ -3,6 +3,9 @@ import {DataStorageService} from '../shared/data-storage.service';
 import {AuthService} from '../auth/auth.service';
 import {Subscription, timer} from 'rxjs';
 import {NamedRoutes} from '../named-routes';
+import {AppState} from '../store/app.reducer';
+import {Store} from '@ngrx/store';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -19,7 +22,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private timerSub: Subscription;
 
   constructor(private dataStorageService: DataStorageService,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private store: Store<AppState>) {
   }
 
   ngOnDestroy(): void {
@@ -31,7 +35,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.userSub = this.authService.user.subscribe(user => {
+    this.userSub = this.store.select('auth')
+      .pipe(map(state => state.user))
+      .subscribe(user => {
       this.isLoggedIn = !!user;
 
       if (user) {
