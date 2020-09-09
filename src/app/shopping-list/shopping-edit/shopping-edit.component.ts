@@ -15,7 +15,6 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   @ViewChild('f', {static: false}) form: NgForm;
   editID: number;
   private editSub: Subscription;
-  private editSub2: Subscription;
 
   constructor(private store: Store<fromApp.AppState>) {
   }
@@ -28,7 +27,7 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.editSub2 = this.store.select('shoppingList').subscribe(state => {
+    this.editSub = this.store.select('shoppingList').subscribe(state => {
       this.editID = state.editing;
       if (this.editing()) {
         const ingredient = state.ingredients[state.editing];
