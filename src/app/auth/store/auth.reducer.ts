@@ -11,14 +11,14 @@ const initialState: State = {
 
 export function authReducer(state = initialState, action: AuthActions) {
   switch (action.type) {
-    case 'LOGIN':
+    case '[Auth] LOGIN':
       const p = action.payload;
       const user = new User(p.email, p.userId, p.token, p.expirationDate);
       return {
         ...state,
         user,
       };
-    case 'LOGOUT':
+    case '[Auth] LOGOUT':
       return {
         ...state,
         user: null
