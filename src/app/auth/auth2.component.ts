@@ -3,6 +3,9 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AuthResponseData, AuthService} from './auth.service';
 import {Observable} from 'rxjs';
 import {Router} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {AppState} from '../store/app.reducer';
+import {LoginStart} from './store/auth.actions';
 
 @Component({
   selector: 'app-auth',
@@ -20,7 +23,8 @@ export class Auth2Component implements OnInit {
   });
 
   constructor(private authService: AuthService,
-              private router: Router) {
+              private router: Router,
+              private store: Store<AppState>) {
   }
 
   ngOnInit(): void {
@@ -40,7 +44,8 @@ export class Auth2Component implements OnInit {
     this.isLoading = true;
     let authObserver: Observable<AuthResponseData>;
     if (this.isLoginMode) {
-      authObserver = this.authService.login(email, password);
+      // authObserver = this.authService.login(email, password);
+      this.store.dispatch(new LoginStart({email, password}));
     } else {
       authObserver = this.authService.signup(email, password);
     }

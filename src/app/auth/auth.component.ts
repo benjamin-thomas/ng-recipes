@@ -6,6 +6,9 @@ import {Router} from '@angular/router';
 import {AlertComponent} from '../shared/alert/alert.component';
 import {PlaceholderDirective} from '../shared/placeholder/placeholder.directive';
 import {take} from 'rxjs/operators';
+import {Store} from '@ngrx/store';
+import {AppState} from '../store/app.reducer';
+import {LoginStart} from './store/auth.actions';
 
 @Component({
   selector: 'app-auth',
@@ -23,7 +26,8 @@ export class AuthComponent implements OnInit, OnDestroy {
 
   constructor(private authService: AuthService,
               private router: Router,
-              private cfr: ComponentFactoryResolver) {
+              private cfr: ComponentFactoryResolver,
+              private store: Store<AppState>) {
   }
 
   ngOnDestroy(): void {
@@ -37,6 +41,13 @@ export class AuthComponent implements OnInit, OnDestroy {
       // this.showErrorAlert('WIP: bogus error message');
     });
 
+    this.store.select('auth').subscribe(state => {
+      this.isLoading = state.loading;
+      this.error = state.authError;
+      if (this.error) {
+        this.showErrorAlert(this.error);
+      }
+    });
   }
 
   onSwitchMode() {
@@ -53,20 +64,22 @@ export class AuthComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     let authObserver: Observable<AuthResponseData>;
     if (this.isLoginMode) {
-      authObserver = this.authService.login(email, password);
+      // authObserver = this.authService.login(email, password);
+      this.store.dispatch(new LoginStart({email, password}));
     } else {
       authObserver = this.authService.signup(email, password);
     }
 
-    authObserver.subscribe(resp => {
-      this.isLoading = false;
-      this.router.navigate(['/recipes']);
-      console.log(resp);
-    }, errMessage => {
-      this.isLoading = false;
-      // this.error = errMessage;
-      this.showErrorAlert(errMessage);
-    });
+
+    // authObserver.subscribe(resp => {
+    //   this.isLoading = false;
+    //   this.router.navigate(['/recipes']);
+    //   console.log(resp);
+    // }, errMessage => {
+    //   this.isLoading = false;
+    //   // this.error = errMessage;
+    //   this.showErrorAlert(errMessage);
+    // });
 
   }
 
