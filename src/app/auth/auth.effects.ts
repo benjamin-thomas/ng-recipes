@@ -1,5 +1,5 @@
 import {Actions, Effect, ofType} from '@ngrx/effects';
-import {Login, LOGIN_START, LOGIN_SUCCESS, LoginFail, LoginStart} from './store/auth.actions';
+import {AUTH_SUCCESS, AuthFail, AuthSuccess, LOGIN_START, LoginStart, SIGNUP_START, SignupStart} from './store/auth.actions';
 import {catchError, map, switchMap, tap} from 'rxjs/operators';
 import {AuthResponseData} from './auth.service';
 import {environment} from '../../environments/environment';
@@ -15,44 +15,30 @@ export class AuthEffects {
   loginURL = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword';
   apiKey = environment.firebaseAPIKey;
 
+  @Effect()
+  signupStart = this.actions$.pipe(
+    ofType(SIGNUP_START),
+    switchMap((action: SignupStart) => {
+      const p = action.payload;
+      return this.handleAuth(p.email, p.password, this.signupURL);
+    })
+  );
+
+  @Effect()
+  loginStart = this.actions$.pipe(
+    ofType(LOGIN_START),
+    switchMap((action: LoginStart) => {
+      const p = action.payload;
+      return this.handleAuth(p.email, p.password, this.loginURL);
+    }),
+  );
+
+
   @Effect({dispatch: false})
-  authSuccess = this.actions$.pipe(ofType(LOGIN_SUCCESS), tap(() => {
+  authSuccess = this.actions$.pipe(ofType(AUTH_SUCCESS), tap(() => {
     this.router.navigate([NamedRoutes.Recipes]);
   }));
 
-  @Effect()
-  authLogin = this.actions$.pipe(
-    ofType(LOGIN_START),
-    switchMap((authData: LoginStart) => {
-      const email = authData.payload.email;
-      const password = authData.payload.password;
-
-      return this.http
-        .post<AuthResponseData>(this.loginURL, {email, password, returnSecureToken: true}, {
-          params: {key: this.apiKey}
-        })
-        .pipe(
-          map(resp => {
-            const secondsUntilExpiration: number = Number(resp.expiresIn);
-            const now = new Date();
-            const expiresIn = new Date(now.getTime() + secondsUntilExpiration * 1000);
-            return new Login({
-              email: resp.email,
-              userId: resp.localId,
-              token: resp.idToken,
-              expirationDate: expiresIn,
-            });
-          }),
-          catchError(err => {
-            return of(new LoginFail(
-              AuthEffects.addBetterErrorMessages(err)
-            ));
-          })
-        );
-
-    }),
-
-  );
 
   constructor(private actions$: Actions,
               private http: HttpClient,
@@ -95,6 +81,33 @@ export class AuthEffects {
     }
 
     return message;
+  }
+
+  private handleAuth(email: string, password: string, url: string) {
+    return this.http
+      .post<AuthResponseData>(url, {
+        email,
+        password,
+        returnSecureToken: true
+      }, {params: {key: this.apiKey}})
+      .pipe(
+        map(resp => {
+          const secondsUntilExpiration: number = Number(resp.expiresIn);
+          const now = new Date();
+          const expiresIn = new Date(now.getTime() + secondsUntilExpiration * 1000);
+          return new AuthSuccess({
+            email: resp.email,
+            userId: resp.localId,
+            token: resp.idToken,
+            expirationDate: expiresIn,
+          });
+        }),
+        catchError(err => {
+          return of(new AuthFail(
+            AuthEffects.addBetterErrorMessages(err)
+          ));
+        })
+      );
   }
 
 }
