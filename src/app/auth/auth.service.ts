@@ -2,10 +2,9 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {User} from './user.model';
 import {Router} from '@angular/router';
-import {NamedRoutes} from '../named-routes';
 import {Store} from '@ngrx/store';
 import {AppState} from '../store/app.reducer';
-import {AuthSuccess, Logout} from './store/auth.actions';
+import {AuthSuccess} from './store/auth.actions';
 
 export interface AuthResponseData {
   idToken: string;
@@ -65,13 +64,12 @@ export class AuthService {
   }
 
   logout() {
-    this.store.dispatch(new Logout());
     localStorage.removeItem('userData');
     if (this.autoLogoutTimer) {
       clearTimeout(this.autoLogoutTimer);
     }
     this.autoLogoutTimer = null;
-    this.router.navigate([NamedRoutes.Auth]);
+    // this.router.navigate([NamedRoutes.Auth]);
   }
 
 }

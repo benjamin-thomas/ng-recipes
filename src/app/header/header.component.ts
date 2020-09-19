@@ -6,6 +6,7 @@ import {NamedRoutes} from '../named-routes';
 import {AppState} from '../store/app.reducer';
 import {Store} from '@ngrx/store';
 import {map} from 'rxjs/operators';
+import {Logout} from '../auth/store/auth.actions';
 
 @Component({
   selector: 'app-header',
@@ -59,7 +60,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this.authService.logout();
+    this.store.dispatch(new Logout());
 
     this.timerSub.unsubscribe();
     this.secondsToLogout = null;

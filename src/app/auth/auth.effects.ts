@@ -1,5 +1,5 @@
 import {Actions, Effect, ofType} from '@ngrx/effects';
-import {AUTH_SUCCESS, AuthFail, AuthSuccess, LOGIN_START, LoginStart, SIGNUP_START, SignupStart} from './store/auth.actions';
+import {AUTH_SUCCESS, AuthFail, AuthSuccess, LOGIN_START, LoginStart, LOGOUT, SIGNUP_START, SignupStart} from './store/auth.actions';
 import {catchError, map, switchMap, tap} from 'rxjs/operators';
 import {AuthResponseData} from './auth.service';
 import {environment} from '../../environments/environment';
@@ -7,7 +7,6 @@ import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {of} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
-import {NamedRoutes} from '../named-routes';
 
 @Injectable()
 export class AuthEffects {
@@ -35,9 +34,11 @@ export class AuthEffects {
 
 
   @Effect({dispatch: false})
-  authSuccess = this.actions$.pipe(ofType(AUTH_SUCCESS), tap(() => {
-    this.router.navigate([NamedRoutes.Recipes]);
-  }));
+  authRedirect = this.actions$.pipe(
+    ofType(AUTH_SUCCESS, LOGOUT),
+    tap(() => {
+      this.router.navigate(['/']);
+    }));
 
 
   constructor(private actions$: Actions,

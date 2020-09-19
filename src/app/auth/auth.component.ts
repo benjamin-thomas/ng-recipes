@@ -22,16 +22,11 @@ export class AuthComponent implements OnInit, OnDestroy {
   @ViewChild(PlaceholderDirective, {static: false}) alertHost: PlaceholderDirective;
   errorTextNode = document.createTextNode('');
   private closeSub: Subscription;
+  private authSub: Subscription;
 
   constructor(private store: Store<AppState>,
               private router: Router,
               private cfr: ComponentFactoryResolver) {
-  }
-
-  ngOnDestroy(): void {
-    if (this.closeSub) { // in case the user somehow gets out of the componant without closing it
-      this.closeSub.unsubscribe();
-    }
   }
 
   ngOnInit(): void {
@@ -39,13 +34,22 @@ export class AuthComponent implements OnInit, OnDestroy {
       // this.showErrorAlert('WIP: bogus error message');
     });
 
-    this.store.select('auth').subscribe(state => {
+    this.authSub = this.store.select('auth').subscribe(state => {
       this.isLoading = state.loading;
       this.error = state.authError;
       if (this.error) {
         this.showErrorAlert(this.error);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.closeSub) { // in case the user somehow gets out of the component without closing it
+      this.closeSub.unsubscribe();
+    }
+
+    // unsubscribe store
+    this.authSub.unsubscribe();
   }
 
   onSwitchMode() {
