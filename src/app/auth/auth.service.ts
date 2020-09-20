@@ -3,19 +3,8 @@ import {Store} from '@ngrx/store';
 import {AppState} from '../store/app.reducer';
 import {Logout} from './store/auth.actions';
 
-export interface AuthResponseData {
-  idToken: string;
-  email: string;
-  refreshToken: string;
-  expiresIn: string;
-  localId: string;
-  registered?: boolean;
-}
-
 @Injectable({providedIn: 'root'})
 export class AuthService {
-  // BehaviorSubject allows a subscriber to access the last nexted value (before the actual subscription)
-  // user = new BehaviorSubject<User>(null);
   private autoLogoutTimer: any;
 
   constructor(private store: Store<AppState>) {

@@ -11,13 +11,22 @@ import {
   SignupStart
 } from './store/auth.actions';
 import {catchError, map, switchMap, tap} from 'rxjs/operators';
-import {AuthResponseData, AuthService} from './auth.service';
 import {environment} from '../../environments/environment';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {of} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {User} from './user.model';
+import {AuthService} from './auth.service';
+
+export interface AuthResponseData {
+  idToken: string;
+  email: string;
+  refreshToken: string;
+  expiresIn: string;
+  localId: string;
+  registered?: boolean;
+}
 
 @Injectable()
 export class AuthEffects {
