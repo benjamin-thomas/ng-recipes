@@ -1,12 +1,23 @@
 import {Actions, Effect, ofType} from '@ngrx/effects';
-import {AUTH_SUCCESS, AuthFail, AuthSuccess, LOGIN_START, LoginStart, LOGOUT, SIGNUP_START, SignupStart} from './store/auth.actions';
+import {
+  AUTH_SUCCESS,
+  AuthFail,
+  AuthSuccess,
+  AUTO_LOGIN,
+  LOGIN_START,
+  LoginStart,
+  LOGOUT,
+  SIGNUP_START,
+  SignupStart
+} from './store/auth.actions';
 import {catchError, map, switchMap, tap} from 'rxjs/operators';
-import {AuthResponseData} from './auth.service';
+import {AuthResponseData, AuthService} from './auth.service';
 import {environment} from '../../environments/environment';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {of} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
+import {User} from './user.model';
 
 @Injectable()
 export class AuthEffects {
@@ -32,10 +43,29 @@ export class AuthEffects {
     }),
   );
 
+  @Effect()
+  autoLogin = this.actions$.pipe(
+    ofType(AUTO_LOGIN),
+    map(() => {
+        return this.handleAutoLogin();
+      }
+    )
+  );
+
+  @Effect({dispatch: false})
+  onLogout = this.actions$.pipe(
+    ofType(LOGOUT),
+    tap(() => {
+        localStorage.removeItem('userData');
+        this.authService.clearLogoutTimer();
+        this.router.navigate(['/auth']);
+      }
+    )
+  );
 
   @Effect({dispatch: false})
   authRedirect = this.actions$.pipe(
-    ofType(AUTH_SUCCESS, LOGOUT),
+    ofType(AUTH_SUCCESS),
     tap(() => {
       this.router.navigate(['/']);
     }));
@@ -43,7 +73,8 @@ export class AuthEffects {
 
   constructor(private actions$: Actions,
               private http: HttpClient,
-              private router: Router) {
+              private router: Router,
+              private authService: AuthService) {
   }
 
   private static addBetterErrorMessages(err: HttpErrorResponse): string {
@@ -96,6 +127,9 @@ export class AuthEffects {
           const secondsUntilExpiration: number = Number(resp.expiresIn);
           const now = new Date();
           const expiresIn = new Date(now.getTime() + secondsUntilExpiration * 1000);
+          const user = new User(resp.email, resp.localId, resp.idToken, expiresIn);
+          localStorage.setItem('userData', JSON.stringify(user));
+          this.authService.setLogoutTimer(secondsUntilExpiration * 1000);
           return new AuthSuccess({
             email: resp.email,
             userId: resp.localId,
@@ -111,4 +145,29 @@ export class AuthEffects {
       );
   }
 
+  private handleAutoLogin() {
+    const userData = localStorage.getItem('userData');
+    if (!userData) {
+      return {type: 'DUMMY_AUTO_LOGIN_FAILED'};
+    }
+
+    const j: {
+      email: string,
+      id: string,
+      _token: string,
+      _tokenExpirationDate: string
+    } = JSON.parse(userData);
+    const user = new User(j.email, j.id, j._token, new Date(j._tokenExpirationDate));
+    if (!user.validToken) {
+      return {type: 'DUMMY_AUTO_LOGIN_FAILED'};
+    }
+    console.log('Auto logging in...');
+    this.authService.setLogoutTimer(user.timeUntilExpirationMS());
+    return new AuthSuccess({
+      email: j.email,
+      userId: j.id,
+      token: j._token,
+      expirationDate: new Date(j._tokenExpirationDate),
+    });
+  }
 }
