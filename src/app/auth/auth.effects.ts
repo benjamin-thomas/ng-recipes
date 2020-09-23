@@ -75,8 +75,10 @@ export class AuthEffects {
   @Effect({dispatch: false})
   authRedirect = this.actions$.pipe(
     ofType(AUTH_SUCCESS),
-    tap(() => {
-      this.router.navigate(['/']);
+    tap((action: AuthSuccess) => {
+      if (action.payload.redirect) {
+        this.router.navigate(['/']);
+      }
     }));
 
 
@@ -144,6 +146,7 @@ export class AuthEffects {
             userId: resp.localId,
             token: resp.idToken,
             expirationDate: expiresIn,
+            redirect: true
           });
         }),
         catchError(err => {
@@ -177,6 +180,7 @@ export class AuthEffects {
       userId: j.id,
       token: j._token,
       expirationDate: new Date(j._tokenExpirationDate),
+      redirect: false
     });
   }
 }

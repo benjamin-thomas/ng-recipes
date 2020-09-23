@@ -1,9 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
-import {RecipeService} from '../recipe.service';
 import {Recipe} from '../recipe';
 import {Ingredient} from '../../shared/ingredient';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../store/app.reducer';
+import {AddRecipe, UpdateRecipe} from '../store/recipe.actions';
+import {take} from 'rxjs/operators';
 
 @Component({
   selector: 'app-recipe-edit',
@@ -13,8 +16,8 @@ import {Ingredient} from '../../shared/ingredient';
 export class RecipeEditComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
-              private recipeService: RecipeService,
-              private  router: Router) {
+              private  router: Router,
+              private store: Store<AppState>) {
   }
   id: number;
   editMode: boolean;
@@ -40,7 +43,10 @@ export class RecipeEditComponent implements OnInit {
         this.editMode = params.id != null;
         let recipe: Recipe;
         if (this.editMode) {
-          recipe = this.recipeService.find(+params.id);
+          // recipe = this.recipeService.find(+params.id);
+          this.store.select('recipe').subscribe(state => {
+            recipe = state.recipes[this.id - 1];
+          });
         } else {
           recipe = new Recipe('', '', '', []);
         }
@@ -53,11 +59,20 @@ export class RecipeEditComponent implements OnInit {
     const val = this.form.value;
     const recipe = new Recipe(val.name, val.description, val.imagePath, val.ingredients);
     if (this.editMode) {
-      this.recipeService.update(this.id, recipe);
+      // this.recipeService.update(this.id, recipe);
+      this.store.dispatch(new UpdateRecipe({ index: this.id - 1, newRecipe: recipe}));
       this.navigateAway();
     } else {
-      this.recipeService.add(recipe);
-      this.router.navigate(['..', this.recipeService.recipes.length], {relativeTo: this.route});
+      // this.recipeService.add(recipe);
+      this.store.dispatch(new AddRecipe(recipe));
+
+      this.store.select('recipe').pipe(
+        take(1),
+      ).subscribe((state) => {
+        const maxID = state.recipes.length;
+        this.router
+          .navigate(['..', maxID], {relativeTo: this.route});
+      });
     }
   }
 
